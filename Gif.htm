@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>gif</title>
+	<style type="text/css">
+	    *{
+			padding: 0;
+			margin: 0;
+		}
+		ul,li{
+			list-style: none;
+		}
+        #div1{
+        	height:22px;
+        	width: 100%;
+        	background-color: #ccc;
+        }
+        p{
+        	display: inline-block;
+        	color: red;
+        	font-size: 14px; 
+        	position: relative;
+        	right: -800px;
+        	top: 2px;
+        }
+        #div3{
+            display: inline-block;
+        	width: 900px;
+            height:22px;
+        	margin: 0 auto;
+        	/*background-color: red;*/
+            overflow: hidden;
+        }
+        .box{
+        	height: 382px;
+        	width: 1200px;
+        	margin: 50px auto;
+        	position: relative;
+        	overflow: hidden;
+        }
+        .slider{
+        	width: 8400px;
+        	position: absolute;
+        	left: -1200px;
+        }
+        #slide{
+        	width:1200px;
+        	overflow: hidden;
+        	float: left;
+        }
+        .box>span{
+        	display: block;
+        	width: 30px;
+        	height: 50px;
+        	text-align: center;
+        	cursor: pointer;
+        	top:175px;
+        	line-height: 50px;
+        	background:rgb(255,0,0);
+        	font-size: 30px;
+        	position: absolute;
+        	opacity: 0;
+        	color: #fff;
+        }
+        #left{
+        	left:30px;
+        }
+        #right{
+        	right: 30px;
+        }
+        .nav{
+        	position: absolute;
+        	left: 500px;
+        	bottom:20px;
+        }
+        .nav>li{
+        	float:left;
+        	width: 20px;
+        	height: 20px;
+        	background-color: #ccc;
+        	cursor: pointer;
+        	margin: 0 10px;
+        	border-radius: 50%;
+        	text-align: center;
+        }
+        .nav .active{
+        	background-color: red;
+        	color: white;
+        }
+        #img1{
+        	margin-left: 200px;  
+        	margin-top: 3px;   	
+        }
+	</style>
+	<script src="animate.js"></script>
+</head>
+<body>
+    <div id ="div1">
+    	<img id ="img1"src ="a15.png">
+    	<div id ="div3"><p id ="p">[温馨提示]最近有不少不法分子在网上骗人，请大家注意!!!</p></div>
+    </div>
+    <div id ="box" class ="box">
+    	<div id ="slider" class ="slider">
+    		<div id ="slide"><img src="b5.png" alt="b5"></div>
+    		<div id ="slide"><img src="b1.png" alt="b1"></div>
+    		<div id ="slide"><img src="b2.png" alt="b2"></div>
+    		<div id ="slide"><img src="b3.png" alt="b3"></div>
+    		<div id ="slide"><img src="b4.png" alt="b4"></div>
+    		<div id ="slide"><img src="b5.png" alt="b5"></div>
+    		<div id ="slide"><img src="b1.png" alt="b1"></div>
+    	</div>
+    	<span id ="left"><</span>
+    	<span id ="right">></span>
+    	<ul id ="nav"class ="nav">
+    		<li class ="active">1</li>
+    		<li>2</li>
+    		<li>3</li>
+    		<li>4</li>
+    		<li>5</li>
+    	</ul>
+    </div>
+</body>
+<script type="text/javascript">
+    //温馨提示滚动
+    var p = document.getElementById("p");
+    window.onload = function pmoving(){
+        console.log(1);
+        setInterval(function(){
+            var now = parseInt(getStyle(p, 'right'));
+            console.log(now);
+            if(now>=350){
+                now = -800;
+            }
+            p.style.right= now + 1 +"px";
+        },10);
+    }
+    var box = document.getElementById("box");
+    var oNavlist = document.getElementById("nav").children;
+    var slider = document.getElementById("slider");
+    var left = document.getElementById("left");
+    var right = document.getElementById("right");
+    var i = 1;
+    var isMoving = false;//图片未动
+    //轮播下一张
+    function next(){
+        if(isMoving==false){
+            isMoving = true;
+            i++;
+            navChanged();
+            animate(slider,{left:-1200*i},function(){
+                if(i > 5){
+                    slider.style.left = "-1200px";
+                    i = 1;
+                }
+                isMoving = false;
+            });
+        }
+    }
+    function prev(){
+        if(isMoving){
+            return;//图片在动，不执行函数
+        }
+        isMoving = true;
+        i--;
+        navChanged();
+        animate(slider,{left:-1200*i},function(){
+            if(i === 0){
+                slider.style.left = -1200*5+"px";
+                i = 5;
+            }
+            isMoving = false;
+        });
+    }
+    var timer = setInterval(next,3000);
+    //鼠标划入定时器
+    box.onmouseover = function(){
+        animate(left,{opacity:50});
+        animate(right,{opacity:50});
+        clearInterval(timer);
+    }
+    //鼠标划出定时器
+    box.onmouseout = function(){
+        animate(left,{opacity:0});
+        animate(right,{opacity:0});
+        timer = setInterval(next,3000);
+    }
+    //点击箭头
+    right.onclick = next;//后
+    left.onclick = prev;//前
+    //五个按钮点击事件
+    for(var j = 0;j<oNavlist.length;j++){
+        oNavlist[j].idx = j;
+        oNavlist[j].onclick = function(){
+            i = this.idx+1;
+            navChanged();
+            animate(slider,{left:-1200*i})
+        }
+    }
+    //五个按钮背景颜色事件
+    function navChanged(){
+        for(var j = 0;j<oNavlist.length;j++){
+            oNavlist[j].className = "";
+        }
+        if(i > 5){
+            oNavlist[0].className = "active";
+        }else if(i === 0){
+            oNavlist[4].className = "active";
+        }
+        else{
+            oNavlist[i-1].className = "active";
+        }
+    }
+</script>
+</html>
