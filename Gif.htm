@@ -124,15 +124,14 @@
     //温馨提示滚动
     var p = document.getElementById("p");
     window.onload = function pmoving(){
-        console.log(1);
         setInterval(function(){
             var now = parseInt(getStyle(p, 'right'));
             console.log(now);
-            if(now>=350){
+            if(now>=370){
                 now = -800;
             }
             p.style.right= now + 1 +"px";
-        },10);
+        },20);
     }
     var box = document.getElementById("box");
     var oNavlist = document.getElementById("nav").children;
